@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect('~/code/rent project/db/rent.db')
+conn = sqlite3.connect('db/rent.db')
 
 cur = conn.cursor()
 
