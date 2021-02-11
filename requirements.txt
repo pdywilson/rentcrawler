@@ -1,12 +1,2 @@
 autoscraper==1.1.12
-beautifulsoup4==4.9.3
-bs4==0.0.1
-numpy==1.20.0
-pandas==1.2.1
-pycrypto==2.6.1
-PyGObject==3.30.4
-requests==2.25.1
-SecretStorage==2.3.1
-six==1.12.0
-soupsieve==2.1
-urllib3==1.26.3
+
