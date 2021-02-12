@@ -4,7 +4,7 @@ from autoscraper import AutoScraper
 import re
 
 def create_db():
-    conn = sqlite3.connect('/home/pdywilson/rentcrawler/db/rent.db')
+    conn = sqlite3.connect('/var/db/rentcrawler/rent.db')
     cur = conn.cursor()
     cur.execute("SELECT * FROM sqlite_master WHERE type='table'")
     create_table_sql = """ CREATE TABLE IF NOT EXISTS dublinrents (
@@ -69,7 +69,7 @@ crawl()
 def insert_to_db(dt_string, avg, median):
 '''import average mean median etc to sql
 '''
-    conn = sqlite3.connect('/home/pdywilson/rentcrawler/db/rent.db')
+    conn = sqlite3.connect('/var/db/rentcrawler/rent.db')
     cur = conn.cursor()
     sql = ''' INSERT INTO dublinrents
                 VALUES(?,?,?) '''
@@ -80,8 +80,9 @@ insert_to_db(dt_string,avg,median)
 print("updated db")
 
 def get_latest_stats()
-    sql = ''' SELECT * FROM dublinrents ORDER BY timestamp DESC LIMIT 1'''
+    conn = sqlite3.connect('/var/db/rentcrawler/rent.db')
     cur = conn.cursor()
+    sql = ''' SELECT * FROM dublinrents ORDER BY timestamp DESC LIMIT 1'''
     r = cur.execute(sql)
     current = r.fetchall()
     curr_timestamp = current[0][0]
