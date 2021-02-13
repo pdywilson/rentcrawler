@@ -13,7 +13,7 @@ sql = """ CREATE TABLE IF NOT EXISTS dublinrents (
                         ); """
 execute_sql(sql,path)
 
-result = crawl(4)
+result = crawl()
 print("Scraped {} rents.".format(len(result)))
 
 numbers = process_list(result)

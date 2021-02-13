@@ -1,5 +1,5 @@
 import pytest
-from crawl import crawl, process_list
+from src.crawl import crawl, process_list
 
 def test_crawl():
     result = crawl(1)
