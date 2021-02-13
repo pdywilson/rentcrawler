@@ -1,15 +1,6 @@
 #check most recent
 import sqlite3
-def get_latest_stats()
-    conn = sqlite3.connect('/var/db/rentcrawler/rent.db')
-    cur = conn.cursor()
-    sql = ''' SELECT * FROM dublinrents ORDER BY timestamp DESC LIMIT 1'''
-    r = cur.execute(sql)
-    current = r.fetchall()
-    curr_timestamp = current[0][0]
-    curr_avg = round(current[0][1])
-    curr_median = round(current[0][2])
-    return curr_avg, curr_median, curr_timestamp
+from crawl import get_latest_stats
 
 curr_avg, curr_median,curr_timestamp = get_latest_stats()
 print("The current rent average is €{}, the median is €{} per month. - {}".format(curr_avg,curr_median,curr_timestamp))
