@@ -2,7 +2,9 @@
 import sqlite3
 from crawl import *
 
-path = "rent.db"
+# path = "rent.db"
+
+path = "/home/pdywilson/db/rent.db"
 
 # create db
 sql = """ CREATE TABLE IF NOT EXISTS dublinrents (
