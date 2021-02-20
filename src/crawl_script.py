@@ -2,11 +2,7 @@
 import sqlite3
 from crawl import *
 
-# for testing purposes:
-# path = "rent.db"
-
-# for deployment:
-path = '/home/pdywilson/rentcrawler/db/rent.db'
+path = "rent.db"
 
 # create db
 sql = """ CREATE TABLE IF NOT EXISTS dublinrents (
