@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import sqlite3
-    #cur.execute("SELECT * FROM sqlite_master WHERE type='table'")
 
 def execute_sql(sql, path = '/var/db/rentcrawler/rent.db', *args):
     conn = sqlite3.connect(path)

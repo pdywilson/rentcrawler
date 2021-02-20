@@ -5,6 +5,9 @@ from crawl import *
 # for testing purposes:
 # path = "rent.db"
 
+# for deployment:
+path = '/var/db/rentcrawler/rent.db'
+
 # create db
 sql = """ CREATE TABLE IF NOT EXISTS dublinrents (
                             timestamp string PRIMARY KEY,
