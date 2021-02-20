@@ -6,7 +6,7 @@ from crawl import *
 # path = "rent.db"
 
 # for deployment:
-path = '/var/db/rentcrawler/rent.db'
+path = '/home/pdywilson/rentcrawler/db/rent.db'
 
 # create db
 sql = """ CREATE TABLE IF NOT EXISTS dublinrents (
