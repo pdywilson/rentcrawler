@@ -5,8 +5,8 @@ from crawl import get_latest_stats
 path = '/home/pdywilson/db/rent.db'
 website_path = '/home/pdywilson/rentmanhost/public/index.html'
 
-curr_avg, curr_median,curr_timestamp = get_latest_stats(path = path)
-print("The current rent average is €{}, the median is €{} per month. - {}".format(curr_avg,curr_median,curr_timestamp))
+curr_avg, curr_median,curr_timestamp,curr_properties = get_latest_stats(path = path, table = "dublinrents_2rooms")
+print("The current rent average is €{}, the median is €{} per month. - {} ({} properties)".format(curr_avg,curr_median,curr_timestamp, curr_properties))
 
 website = """<!DOCTYPE html>
 <html>
@@ -24,6 +24,7 @@ website = """<!DOCTYPE html>
     <p>The average rent in Dublin is: €{}</p>
     <p>The median rent in Dublin is: €{}</p>
     <p>Last updated: {}</p>
+    <p>(Based on {} 2 bedroom Dublin-City properties)</p>
   </div>
 
 
@@ -31,7 +32,7 @@ website = """<!DOCTYPE html>
 </body>
 
 
-</html>""".format(curr_avg,curr_median,curr_timestamp)
+</html>""".format(curr_avg,curr_median,curr_timestamp, curr_properties)
 
 f = open(website_path, "w")
 f.write(website)
