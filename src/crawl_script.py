@@ -3,6 +3,7 @@ import sqlite3
 from crawl import *
 
 path = "/home/pdywilson/db/rent.db"
+num_pages = 100
 
 #testing:
 #path = "rent.db"
