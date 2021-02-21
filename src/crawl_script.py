@@ -11,6 +11,7 @@ num_pages = 100
 
 
 table_urls = {
+    "dublinrents":'https://www.daft.ie/property-for-rent/dublin-city/apartments?numBeds_to=2&numBeds_from=1&sort=publishDateDesc&from={}&pageSize=20', 
     "dublinrents_1rooms":'https://www.daft.ie/property-for-rent/dublin-city?numBeds_to=1&numBeds_from=1&sort=publishDateDesc&from={}&pageSize=20', 
     "dublinrents_2rooms":'https://www.daft.ie/property-for-rent/dublin-city?numBeds_to=2&numBeds_from=2&sort=publishDateDesc&from={}&pageSize=20', 
     "dublinrents_3rooms":'https://www.daft.ie/property-for-rent/dublin-city?numBeds_to=3&numBeds_from=3&sort=publishDateDesc&from={}&pageSize=20', 
