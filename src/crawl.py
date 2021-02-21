@@ -41,8 +41,7 @@ def crawl(num_pages=100, path = '/var/db/rentcrawler/rent.db', url_blueprint = '
 
     url_blueprint = url_blueprint
     url_list = list(map(lambda i: url_blueprint.format(i),range(0,num_pages*20,20)))
-    print(url_list)
-
+    
     result = []
     scraper = AutoScraper()
 
