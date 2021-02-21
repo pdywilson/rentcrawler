@@ -54,7 +54,7 @@ website = """<!DOCTYPE html>
       <p>(Based on {} {}-bedroom Dublin-City properties)</p>
       <p>Last updated: {}</p>
       </div>
-    """.format(4, avg_4, median_4, properties_4, "4+", timestamp_4)+\
+    """.format("4+", avg_4, median_4, properties_4, "4+", timestamp_4)+\
 """
 </body>
 </html>"""
