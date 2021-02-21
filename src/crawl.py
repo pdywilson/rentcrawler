@@ -11,14 +11,15 @@ def execute_sql(sql, path = '/var/db/rentcrawler/rent.db', *args):
         cur.execute(sql)
     return cur
 
-def get_latest_stats(path = '/var/db/rentcrawler/rent.db'):
-    sql = ''' SELECT * FROM dublinrents ORDER BY timestamp DESC LIMIT 1'''
+def get_latest_stats(path = '/var/db/rentcrawler/rent.db', table="dublinrents"):
+    sql = " SELECT * FROM {} ORDER BY timestamp DESC LIMIT 1".format(table)
     r = execute_sql(sql, path)
     current = r.fetchall()
     curr_timestamp = current[0][0]
     curr_avg = round(current[0][1])
     curr_median = round(current[0][2])
-    return curr_avg, curr_median, curr_timestamp
+    curr_properties = round(current[0][3])
+    return curr_avg, curr_median, curr_timestamp, curr_properties
 
 def process_list(list_of_strings):
     numbers = []
@@ -33,13 +34,14 @@ def process_list(list_of_strings):
     
     return numbers
 
-def crawl(num_pages=100):
+def crawl(num_pages=100, path = '/var/db/rentcrawler/rent.db', url_blueprint = 'https://www.daft.ie/property-for-rent/dublin-city/apartments?numBeds_to=2&sort=publishDateDesc&from={}&pageSize=20'):
     from autoscraper import AutoScraper
     import re
     wanted_list = [re.compile('€.*per month')]
 
-    url_blueprint = 'https://www.daft.ie/property-for-rent/dublin-city/apartments?numBeds_to=2&sort=publishDateDesc&from={}&pageSize=20'
+    url_blueprint = url_blueprint
     url_list = list(map(lambda i: url_blueprint.format(i),range(0,num_pages*20,20)))
+    print(url_list)
 
     result = []
     scraper = AutoScraper()
