@@ -5,6 +5,7 @@ from crawl import get_latest_stats
 path = '/home/pdywilson/db/rent.db'
 website_path = '/home/pdywilson/rentmanhost/public/index.html'
 
+#path = '/Users/pdywilson/my/projects/rentcrawler/src/rent.db'
 #print("The current rent average is €{}, the median is €{} per month. - {} ({} properties)".format(curr_avg,curr_median,curr_timestamp, curr_properties))
 
 avg_1, median_1, timestamp_1, properties_1 = get_latest_stats(path = path, table = "dublinrents_1rooms")
@@ -31,21 +32,21 @@ website = """<!DOCTYPE html>
       <p>The median rent is: €{}</p>
       <p>(Based on {} {}-bedroom Dublin-City properties)</p>
       </div>
-    """.format(1,avg_1, median_1, timestamp_1, properties_1, 1)+\
+    """.format(1, avg_1, median_1, properties_1, 1)+\
     """<div>
       <h2>{}-bedroom</h2>
       <p>The average rent is: €{}</p>
       <p>The median rent is: €{}</p>
       <p>(Based on {} {}-bedroom Dublin-City properties)</p>
       </div>
-    """.format(2, avg_2, median_2, timestamp_2, properties_2, 2)+\
+    """.format(2, avg_2, median_2, properties_2, 2)+\
     """<div>
       <h2>{}-bedroom</h2>
       <p>The average rent is: €{}</p>
       <p>The median rent is: €{}</p>
       <p>(Based on {} {}-bedroom Dublin-City properties)</p>
       </div>
-    """.format(3, avg_3, median_3, timestamp_3, properties_3, 3)+\
+    """.format(3, avg_3, median_3, properties_3, 3)+\
     """<div>
       <h2>{}-bedroom</h2>
       <p>The average rent is: €{}</p>
@@ -53,7 +54,7 @@ website = """<!DOCTYPE html>
       <p>(Based on {} {}-bedroom Dublin-City properties)</p>
       <p>Last updated: {}</p>
       </div>
-    """.format(4, avg_4, median_4, timestamp_4, properties_4, 4)+\
+    """.format(4, avg_4, median_4, properties_4, "4+", timestamp_4)+\
 """
 </body>
 </html>"""
