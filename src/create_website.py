@@ -3,7 +3,7 @@ import sqlite3
 from crawl import get_latest_stats
 
 path = '/home/pdywilson/db/rent.db'
-website_path = 'home/pdywilson/rentmanhost/public/index.html'
+website_path = '/home/pdywilson/rentmanhost/public/index.html'
 
 curr_avg, curr_median,curr_timestamp = get_latest_stats(path = path)
 print("The current rent average is €{}, the median is €{} per month. - {}".format(curr_avg,curr_median,curr_timestamp))
