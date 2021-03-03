@@ -23,10 +23,10 @@ table_urls = {
 # create db
 for table in table_urls:
     sql = """ CREATE TABLE IF NOT EXISTS {} (
-                                timestamp string PRIMARY KEY,
-                                avg float NOT NULL,
-                                median float NOT NULL,
-                                number_of_properties float NOT NULL
+                                timestamp datetime PRIMARY KEY,
+                                avg float,
+                                median float,
+                                number_of_properties float
                             ); """.format(table)
     execute_sql(sql,path)
 
@@ -42,12 +42,11 @@ for table in table_urls:
     properties = len(numbers)
 
     from datetime import datetime
-    now = datetime.now()
-    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-    print("Datestamp now: {}".format(dt_string))
+    dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print("Datestamp now: {}".format(dt))
 
     sql = "INSERT INTO {} VALUES(?,?,?,?)".format(table)
-    execute_sql(sql, path, dt_string, avg, median, properties)
+    execute_sql(sql, path, dt, avg, median, properties)
 
     curr_avg, curr_median,curr_timestamp,curr_properties = get_latest_stats(path, table=table)
     print("The current rent average is €{}, the median is €{} per month. - {} ({} properties)".format(curr_avg,curr_median,curr_timestamp,curr_properties))
