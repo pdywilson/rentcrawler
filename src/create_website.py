@@ -14,6 +14,12 @@ avg_3, median_3, timestamp_3, properties_3 = get_latest_stats(path = path, table
 avg_4, median_4, timestamp_4, properties_4 = get_latest_stats(path = path, table = "dublinrents_4rooms")
 website = """<!DOCTYPE html>
 <html>
+<style>
+.content {
+  max-width: 500px;
+  margin: auto;
+}
+</style>
 
 <head>
     <meta charset="utf-8">
@@ -22,7 +28,8 @@ website = """<!DOCTYPE html>
 </head>
 
 <body>"""+\
-    """<div>
+    """<div class="content">
+    <div>
       <h2>Average Monthly Rent in Dublin</h2>
       <h1>Rents are on 🔥</h1>
       </div>
@@ -53,6 +60,7 @@ website = """<!DOCTYPE html>
       <p>The median rent is: €{}</p>
       <p>(Based on {} {}-bedroom Dublin-City properties)</p>
       <p>Last updated: {}</p>
+      </div>
       </div>
     """.format("4+", avg_4, median_4, properties_4, "4+", timestamp_4)+\
 """
