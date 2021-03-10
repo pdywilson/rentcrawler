@@ -18,6 +18,7 @@ website = """<!DOCTYPE html>
 .content {
   max-width: 500px;
   margin: auto;
+  text-align: center;
 }
 </style>
 
