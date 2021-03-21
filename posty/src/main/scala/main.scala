@@ -145,11 +145,11 @@ object MainGuy {
     // 1. Crawl rents
 
     val urls: Map[String, String] = Map(
-      //"dublinrents"->"https://www.daft.ie/property-for-rent/dublin-city/apartments?numBeds_to=2&numBeds_from=1&sort=publishDateDesc&from=%s&pageSize=20", 
-      "dublinrents_1rooms"->"https://www.daft.ie/property-for-rent/dublin-city?numBeds_to=1&numBeds_from=1&sort=publishDateDesc&from=%s&pageSize=20", 
-      "dublinrents_2rooms"->"https://www.daft.ie/property-for-rent/dublin-city?numBeds_to=2&numBeds_from=2&sort=publishDateDesc&from=%s&pageSize=20", 
-      "dublinrents_3rooms"->"https://www.daft.ie/property-for-rent/dublin-city?numBeds_to=3&numBeds_from=3&sort=publishDateDesc&from=%s&pageSize=20", 
-      "dublinrents_4rooms"->"https://www.daft.ie/property-for-rent/dublin-city?numBeds_from=4&sort=publishDateDesc&from=%s&pageSize=20"
+      //"dublinrents"->"", 
+      //"dublinrents_1rooms"->"", 
+      //"dublinrents_2rooms"->"", 
+      //"dublinrents_3rooms"->"", 
+      //"dublinrents_4rooms"->""
     )
 
     val num_sites_to_scrape: Map[String,Int] = urls.map { case (k, v) => k -> getNumberOfSitesToScrape(v.format(0)) }
