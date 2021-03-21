@@ -123,7 +123,7 @@ object MainGuy {
             <h2>4-bedroom</h2>
             <p>The average rent is: €${stats4("avg")}</p>
             <p>The median rent is: €${stats4("median")}</p>
-            <p>(Based on ${stats4("number_of_properties")} 4-bedroom Dublin-City properties)</p>
+            <p>(Based on ${stats4("number_of_properties")} 4+-bedroom Dublin-City properties)</p>
             </div>
             <div>
             <p>Last updated: ${stats1("timestamp")}</p>
