@@ -34,7 +34,7 @@ def process_list(list_of_strings):
     
     return numbers
 
-def crawl(num_pages=100, path = '/var/db/rentcrawler/rent.db', url_blueprint = 'https://www.daft.ie/property-for-rent/dublin-city/apartments?numBeds_to=2&sort=publishDateDesc&from={}&pageSize=20'):
+def crawl(num_pages=100, path = '/var/db/rentcrawler/rent.db', url_blueprint):
     from autoscraper import AutoScraper
     import re
     wanted_list = [re.compile('€.*per month')]
