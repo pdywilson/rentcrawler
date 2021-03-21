@@ -146,10 +146,10 @@ object MainGuy {
 
     val urls: Map[String, String] = Map(
       //"dublinrents"->"https://www.daft.ie/property-for-rent/dublin-city/apartments?numBeds_to=2&numBeds_from=1&sort=publishDateDesc&from=%s&pageSize=20", 
-      //"dublinrents_1rooms"->"https://www.daft.ie/property-for-rent/dublin-city?numBeds_to=1&numBeds_from=1&sort=publishDateDesc&from=%s&pageSize=20", 
-      //"dublinrents_2rooms"->"https://www.daft.ie/property-for-rent/dublin-city?numBeds_to=2&numBeds_from=2&sort=publishDateDesc&from=%s&pageSize=20", 
+      "dublinrents_1rooms"->"https://www.daft.ie/property-for-rent/dublin-city?numBeds_to=1&numBeds_from=1&sort=publishDateDesc&from=%s&pageSize=20", 
+      "dublinrents_2rooms"->"https://www.daft.ie/property-for-rent/dublin-city?numBeds_to=2&numBeds_from=2&sort=publishDateDesc&from=%s&pageSize=20", 
       "dublinrents_3rooms"->"https://www.daft.ie/property-for-rent/dublin-city?numBeds_to=3&numBeds_from=3&sort=publishDateDesc&from=%s&pageSize=20", 
-      //"dublinrents_4rooms"->"https://www.daft.ie/property-for-rent/dublin-city?numBeds_from=4&sort=publishDateDesc&from=%s&pageSize=20"
+      "dublinrents_4rooms"->"https://www.daft.ie/property-for-rent/dublin-city?numBeds_from=4&sort=publishDateDesc&from=%s&pageSize=20"
     )
 
     val num_sites_to_scrape: Map[String,Int] = urls.map { case (k, v) => k -> getNumberOfSitesToScrape(v.format(0)) }
@@ -183,7 +183,8 @@ object MainGuy {
     // ad-hoc session provider on the REPL
     implicit val session = AutoSession
     Class.forName("org.postgresql.Driver")
-    ConnectionPool.singleton("jdbc:postgresql://35.240.77.23/", "postgres", scala.io.Source.fromFile(".config").getLines.next().toString)
+    val config = scala.io.Source.fromFile(".config").getLines
+    ConnectionPool.singleton(config.next().toString, config.next().toString, config.next().toString)
 
     stats.map { case (k, v) => k -> insert_to_db(k, v)(session) }
 
