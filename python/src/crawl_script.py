@@ -31,7 +31,7 @@ for table in table_urls:
     execute_sql(sql,path)
 
 for table in table_urls:
-    result = crawl(num_pages = num_pages, path=path, url_blueprint = table_urls[table])
+    result = crawl(url_blueprint = table_urls[table], num_pages = num_pages, path=path)
     print("Scraped {} rents.".format(len(result)))
 
     numbers = process_list(result)

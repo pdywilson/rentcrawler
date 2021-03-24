@@ -2,7 +2,8 @@ import pytest
 from src.crawl import crawl, process_list
 
 def test_crawl():
-    result = crawl(1)
+    url = ''
+    result = crawl(url,1)
     assert type(result) is list
 
 def test_process_list():
