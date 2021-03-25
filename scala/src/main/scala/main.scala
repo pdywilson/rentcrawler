@@ -29,10 +29,10 @@ object MainGuy {
       val browser = JsoupBrowser()
       val regex = """[0-9]{0,1},{0,1}[0-9]{1,3}""".r
       val doc = browser.get(url)
-      val header_string = (doc >> allText("h1"))
-      val num_apartments = regex.findAllIn(header_string).next().slice(0,5).replace(",","").toInt
-      val num_sites_to_scrape = math.ceil(num_apartments/20).toInt
-      num_sites_to_scrape
+      val headerString = (doc >> allText("h1"))
+      val numberOfApartments = regex.findAllIn(headerString).next().slice(0,5).replace(",","").toInt
+      val numberOfSitesToScrape = math.ceil(numberOfApartments/20).toInt
+      numberOfSitesToScrape
     }
 
 
@@ -42,31 +42,34 @@ object MainGuy {
     def processOneUrl(url: String) = Future[List[Int]] {
       val numberPattern: Regex = "€.{1,9}per month".r
       val browser = JsoupBrowser()
-      val one_url = browser.get(url)
-      val output = one_url >> elementList("span")
-      val output2 = output.map(_ >> allText("span"))
-      val output3 = output2.map(elt => numberPattern.findAllMatchIn(elt)).flatten
-      val output4 = output3.map(d => d.toString.dropRight(10).drop(1).replace(",","").toInt)
-      output4
+      val oneUrl = browser.get(url)
+      val candidates = oneUrl >> elementList("span")
+      val candidatesAsString = candidates.map(_ >> allText("span"))
+      val rentList = 
+        candidatesAsString
+          .map(elt => numberPattern.findAllMatchIn(elt))
+          .flatten
+          .map(d => d.toString.dropRight(10).drop(1).replace(",","").toInt)
+      rentList
      } recover {case _ => List[Int]()}
 
 
   /**
    * Updates SQL Database with timestamp, avg, median, number_of_properties.
    */
-    def insert_to_db(table: String, stats: Vector[Int])(implicit session: scalikejdbc.AutoSession.type) = {
-      val t = new java.sql.Timestamp(System.currentTimeMillis())
+    def writeToDB(table: String, stats: Vector[Int])(implicit session: scalikejdbc.AutoSession.type) = {
+      val currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis())
       val tableName = SQLSyntax.createUnsafely(table)
-      sql"""insert into ${tableName} values(${t},${stats(0)},${stats(1)},${stats(2)})""".execute.apply()
+      sql"""insert into ${tableName} values(${currentTimestamp},${stats(0)},${stats(1)},${stats(2)})""".execute.apply()
     }
 
   /**
    * Get latest data from database (timestamp, avg, median, number_of_properties).
    */
-    def select_from_db(table: String)(implicit session: scalikejdbc.AutoSession.type) = {
+    def selectFromDB(table: String)(implicit session: scalikejdbc.AutoSession.type) = {
       val tableName = SQLSyntax.createUnsafely(table)
-      val sql_out = sql"""select * from ${tableName} order by timestamp desc limit 1""".map(_.toMap).list.apply()
-      sql_out(0)
+      val latestData = sql"""select * from ${tableName} order by timestamp desc limit 1""".map(_.toMap).list.apply()
+      latestData(0)
     }
 
   /**
@@ -75,11 +78,11 @@ object MainGuy {
    * First queries the database for latest results.
    * Then writes a html-String to the file.
    */
-  def update_website()(implicit session: scalikejdbc.AutoSession.type) = {
-    val stats1 = select_from_db("dublinrents_1rooms")
-    val stats2 = select_from_db("dublinrents_2rooms")
-    val stats3 = select_from_db("dublinrents_3rooms")
-    val stats4 = select_from_db("dublinrents_4rooms")
+  def updateWebsite()(implicit session: scalikejdbc.AutoSession.type) = {
+    val stats1 = selectFromDB("dublinrents_1rooms")
+    val stats2 = selectFromDB("dublinrents_2rooms")
+    val stats3 = selectFromDB("dublinrents_3rooms")
+    val stats4 = selectFromDB("dublinrents_4rooms")
 
     val website = s"""<!DOCTYPE html>
         <html>
@@ -132,9 +135,9 @@ object MainGuy {
         </body>
         </html>"""
 
-    val website_path = "/home/pdywilson/rentmanhost/public/index.html"
+    val websitePath = "/home/pdywilson/rentmanhost/public/index.html"
 
-    val pw = new PrintWriter(new File(website_path))
+    val pw = new PrintWriter(new File(websitePath))
     pw.write(website)
     pw.close()
   }
@@ -152,31 +155,33 @@ object MainGuy {
       //"dublinrents_4rooms"->""
     )
 
-    val num_sites_to_scrape: Map[String,Int] = urls.map { case (k, v) => k -> getNumberOfSitesToScrape(v.format(0)) }
-    println(num_sites_to_scrape)
+    val numberOfSitesToScrape: Map[String,Int] = 
+      urls.map { case (k, v) => k -> getNumberOfSitesToScrape(v.format(0)) }
 
-    val r: Map[String, IndexedSeq[Int]] = num_sites_to_scrape.map { case (k, v) => k -> (0 to v).map(x => x*20) }
+    // Populate Url blueprints using helperMap and numberOfSitesToScrape
+    val helperMap: Map[String, IndexedSeq[Int]] = 
+      numberOfSitesToScrape.map { case (k, v) => k -> (0 to v).map(x => x*20) }
 
-    val urls2: Map[String, IndexedSeq[String]] = urls.map { case (k, v) => k -> r(k).map(x => v.format(x)) }
-    
-    println(s"Scraping %s websites".format(urls2.map { case (k, v) => v.length}.reduce( (a, b) => a + b)))
+    val urlsPopulated: Map[String, IndexedSeq[String]] = 
+      urls.map { case (k, v) => k -> helperMap(k).map(x => v.format(x)) }
 
-    // Step: Map
-    val urls3: ParMap[String,ParSeq[Future[List[Int]]]] = urls2.par.map {
+    val urlLengths: Map[String,Int] = urlsPopulated.map {case (table, lists) => table -> lists.length}
+    println("Processing: "+urlLengths)
+
+    // Map Step. populated Urls to the process each Url asynchronously
+    val urlsProcessing: ParMap[String,ParSeq[Future[List[Int]]]] = urlsPopulated.par.map {
       case (table, urls) => table -> urls.par.map(url => processOneUrl(url))
     }
-    // Step: Reduce
-    val urls4: ParMap[String,ParSeq[Int]] = urls3.par.map {
+
+    // Reduce Step. Collect all processed Urls.
+    val urlsProcessed: ParMap[String,ParSeq[Int]] = urlsProcessing.par.map {
       case (table, futures) => table -> futures.par.map(one => Await.result(one, 60 seconds)).flatten
     }
   
-    val urls_lengths: ParMap[String,Int] = urls3.map {case (table, lists) => table -> lists.length}
-    println(urls_lengths)
-
-    val stats: ParMap[String,Vector[Int]] = urls4.map { 
+    val stats: ParMap[String,Vector[Int]] = urlsProcessed.map { 
       case (k, v) => k -> Vector(v.sum/v.length, v.seq.sortWith(_ < _).drop(v.length/2).head, v.length) 
     }
-
+    println("Results: "+stats)
 
     // 2. Write to SQL
 
@@ -186,11 +191,11 @@ object MainGuy {
     val config = scala.io.Source.fromFile(".config").getLines
     ConnectionPool.singleton(config.next().toString, config.next().toString, config.next().toString)
 
-    stats.map { case (k, v) => k -> insert_to_db(k, v)(session) }
+    stats.map { case (k, v) => k -> writeToDB(k, v)(session) }
 
 
     // 3. Update Website
-    update_website()(session)
+    updateWebsite()(session)
 
   }
 }
