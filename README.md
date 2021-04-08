@@ -6,7 +6,7 @@ Status](https://travis-ci.com/pdywilson/rentcrawler.svg?branch=main)](https://tr
 # Rentcrawler
 ## A minimal example of deploying a data pipeline
 
-*Update*: This is an updated version of my project. Initially I used Python and the code took about ~4 minutes to run, now with Scala and Asynchronous + Parallel programming it runs in ~30 seconds.
+*Update: This is an updated version of my project. Initially I used Python and the code took about ~4 minutes to run, now with Scala and Asynchronous + Parallel programming it runs in ~30 seconds.*
 
 Almost one year into quarantine here in Dublin I was wondering whether the notoriously high rent prices in Dublin might actually be going down at the moment. To investigate this I wanted to set up a data processing pipeline that automatically updates a webpage with the current status of monthly rent prices in Dublin, all while trying out google compute cloud & firebase.
 
@@ -82,8 +82,44 @@ This saves a timestamp together with the mean, median and number of properties u
 
 Now that the database is set up, we can move on to deploying the application.
 
-## Part 3. Deployment
-First we configure a VM instance (Virtual Machine) on Google Compute Cloud. I went with e2-medium (2 vCPUs, 4 GB memory), the standard debian image and a zone in europe which is where I live. I also activated HTTP and HTTPS traffic. Clicking on the SSH button opens up a terminal in the browser and we can go ahead and pull our Scala code onto it from github. To run the code, I compiled it with `sbt assembly` and then was able to run it with `scala target/...jar`. 
+## Part 3. Building
+
+To run the code, I compiled it with `sbt assembly` and then was able to run it with `scala target/...jar`. But instead, we can also containerize the application for easier portability.
+
+### Containerization
+Instead of building with assembly to create a jar, we can easily create a docker container and run that instead.
+
+Basically we need to add 
+```
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.3.6")
+```
+to project/plugin.sbt, and 
+```
+enablePlugins(JavaAppPackaging)
+```
+to build.sbt. This enables us to use 'sbt stage' and run our app. If we have docker installed, we can then run sbt docker:stage to stage it and sbt docker:publishLocal to create the image. Run the image as usual per docker run <image>. 
+
+Our good old friend cron can be used to run the program every few hours. Using crontab -e lets us input the schedule time and the command to run. In this case it is good practice used docker run --rm <image>  to run my app, so that it automatically removes the container when it's done.
+
+
+
+Other notes:
+- How to send emails via command-line: https://sylvaindurand.org/send-emails-with-msmtp/
+- Some commands for docker clean up:
+
+```
+docker container stop $(docker container ls –aq)
+```
+```
+docker container rm $(docker container ls –aq)
+```
+
+Find more details on this in my [blogpost](https://pdywilson.github.io/posts/10_Containerizing_my_Scala_scraper).
+
+## Part 4. Deployment
+First we configure a VM instance (Virtual Machine) on Google Compute Cloud. I went with e2-medium (2 vCPUs, 4 GB memory), the standard debian image and a zone in europe which is where I live. I also activated HTTP and HTTPS traffic. Clicking on the SSH button opens up a terminal in the browser and we can go ahead and pull our Scala code onto it from github. 
+
+
 
 As mentioned above, I am using Firebase for deploying the website and here I just followed the Get-Started-Guide at https://firebase.google.com/docs/hosting/quickstart. This quick start guide deploys a website at *projectname*.web.app showing the contents of an index.html file on my VM instance. All that's left to do is populate this index.html file. To do this, I simply output an index.html file with scala using a long string.
 
@@ -154,7 +190,7 @@ As mentioned above, I am using Firebase for deploying the website and here I jus
 
 This function fetches the latest results from the SQL database and then populates the HTML string with the newest numbers on monthly rents in Dublin. The index.html file is then updated with the HTML string.
 
-## Part 4. Automation
+## Part 5. Automation
 
 To automate it I set up a cron job to run it every 24 hours. This is done by editing the crontab with `crontab -e` on the VM.
 
@@ -173,7 +209,7 @@ Today we had a look at a small example of deploying a data pipeline that automat
 
 1. We used Scala and the library `scala-scraper` to scrape the web for data.
 2. We used Google Cloud SQL to store our data into a persistent database.
-3. We used Google Compute Engine to deploy our code.
+3. We used Google Compute Engine to deploy our `containerized` application.
 4. We used Firebase to host a website.
 5. We used cron to for automation of tasks.
 
