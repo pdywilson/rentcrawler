@@ -97,7 +97,7 @@ to project/plugin.sbt, and
 ```
 enablePlugins(JavaAppPackaging)
 ```
-to build.sbt. This enables us to use 'sbt stage' and run our app. If we have docker installed, we can then run `sbt docker:stage` to stage it and `sbt docker:publishLocal` to create the image. Run the image as usual per docker run <image>. 
+to build.sbt. This enables us to use 'sbt stage' and run our app. If we have docker installed, we can then run `sbt docker:stage` to stage it and `sbt docker:publishLocal` to create the image. Run the image as usual per `docker run <image>`. 
 
 
 Some commands for docker clean up:
