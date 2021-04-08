@@ -97,15 +97,10 @@ to project/plugin.sbt, and
 ```
 enablePlugins(JavaAppPackaging)
 ```
-to build.sbt. This enables us to use 'sbt stage' and run our app. If we have docker installed, we can then run sbt docker:stage to stage it and sbt docker:publishLocal to create the image. Run the image as usual per docker run <image>. 
-
-Our good old friend cron can be used to run the program every few hours. Using crontab -e lets us input the schedule time and the command to run. In this case it is good practice used docker run --rm <image>  to run my app, so that it automatically removes the container when it's done.
+to build.sbt. This enables us to use 'sbt stage' and run our app. If we have docker installed, we can then run `sbt docker:stage` to stage it and `sbt docker:publishLocal` to create the image. Run the image as usual per docker run <image>. 
 
 
-
-Other notes:
-- How to send emails via command-line: https://sylvaindurand.org/send-emails-with-msmtp/
-- Some commands for docker clean up:
+Some commands for docker clean up:
 
 ```
 docker container stop $(docker container ls –aq)
